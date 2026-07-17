@@ -4609,6 +4609,18 @@ bool Unit::IsHighestExclusiveAuraEffect(SpellInfo const* spellInfo, AuraType aur
 
         if (sSpellMgr->CheckSpellGroupStackRules(spellInfo, existingAurEff->GetSpellInfo()) == SPELL_GROUP_STACK_RULE_EXCLUSIVE_HIGHEST)
         {
+            //Fix Thorns exclusive highest aura refresh
+            SpellInfo const* existingInfo = existingAurEff->GetSpellInfo();
+
+            if (spellInfo->IsRankOf(existingInfo))
+            {
+                if (spellInfo->GetRank() < existingInfo->GetRank())
+                    return false;
+
+                if (spellInfo->GetRank() == existingInfo->GetRank())
+                    continue;
+            }
+            //end
             int32 diff = abs(effectAmount) - abs(existingAurEff->GetAmount());
             if (!diff)
                 for (int32 i = 0; i < MAX_SPELL_EFFECTS; ++i)
